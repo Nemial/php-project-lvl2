@@ -1,13 +1,17 @@
 {
     "name": "nemial/gendiff",
-    "description": "Calculates the differences in the files",
-    "minimum-stability": "stable",
+    "description": "Generate diff",
+    "minimum-stability": "dev",
     "license": "MIT",
     "authors": [
         {
             "name": "nemial",
-            "email": "nemtre@protonmail.com"
+            "email": "nemtre@protonmail.com",
+            "role": "Developer"
         }
+    ],
+    "bin": [
+        "bin/gendiff"
     ],
     "require": {
         "docopt/docopt": "^1.0.4"
