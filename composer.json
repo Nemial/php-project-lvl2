@@ -1,0 +1,15 @@
+{
+    "name": "nemial/gendiff",
+    "description": "Calculates the differences in the files",
+    "minimum-stability": "stable",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nemial",
+            "email": "nemtre@protonmail.com"
+        }
+    ],
+    "require": {
+        "docopt/docopt": "^1.0.4"
+    }
+}
