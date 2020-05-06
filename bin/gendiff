@@ -9,6 +9,8 @@ if (file_exists($autoloadPath1)) {
 }
 
 $doc = <<< DOC
+Generate diff
+
 Usage:
   gendiff (-h|--help)
   gendiff (-v|--version)
