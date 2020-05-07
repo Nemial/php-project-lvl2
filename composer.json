@@ -13,7 +13,13 @@
     "bin": [
         "bin/gendiff"
     ],
+    "autoload": {
+        "files": [
+            "src/Core.php"
+        ]
+    },
     "require": {
-        "docopt/docopt": "^1.0.4"
+        "docopt/docopt": "^1.0.4",
+        "funct/funct": "^1.5.0"
     }
 }
