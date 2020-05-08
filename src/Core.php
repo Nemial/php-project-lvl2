@@ -2,8 +2,6 @@
 
 namespace gendiff\Core;
 
-use function funct\false;
-
 function normalizePathToFile(string $pathToFile): string
 {
     if (file_exists($pathToFile)) {
@@ -23,6 +21,17 @@ function decodeFile(string $file): array
     return json_decode($file, true);
 }
 
+function normalizeValue($value)
+{
+    if (is_bool($value)) {
+        if ($value) {
+            return 'true';
+        }
+        return 'false';
+    }
+    return $value;
+}
+
 function genDiff(array $firstFile, array $secondFile)
 {
     $keysFirstFile = array_keys($firstFile);
@@ -32,14 +41,8 @@ function genDiff(array $firstFile, array $secondFile)
     $diffMap = array_reduce($allKeys, function ($acc, $key) use ($firstFile, $secondFile) {
         $haveFirstFileKey = array_key_exists($key, $firstFile);
         $haveSecondFileKey = array_key_exists($key, $secondFile);
-        $firstValue = $firstFile[$key] ?? null;
-        $secondValue = $secondFile[$key] ?? null;
-        if (is_bool($firstValue)) {
-            $firstValue = false($firstValue) ? 'false' : 'true';
-        }
-        if (is_bool($secondValue)) {
-            $secondValue = false($secondValue) ? 'false' : 'true';
-        }
+        $firstValue = $haveFirstFileKey ? normalizeValue($firstFile[$key]) : null;
+        $secondValue = $haveSecondFileKey ? normalizeValue($secondFile[$key]) : null;
 
         if ($haveFirstFileKey && $haveSecondFileKey) {
             if ($firstValue === $secondValue) {
