@@ -29,6 +29,7 @@ jobs:
         CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID_MY}}
       with:
         coverageCommand: make test
+        coverageLocations: ${{github.workspace}}/coverage-report:clover
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
