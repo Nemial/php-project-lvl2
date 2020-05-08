@@ -23,8 +23,12 @@ jobs:
     - name: Run Linter
       run: make lint
 
-    - name: Run Test
-      run: make test
+    - name: Test & publish code coverage
+      uses: paambaati/codeclimate-action@v2.6.0
+      env:
+        CC_TEST_REPORTER_ID: ${{secrets.CC_TEST_REPORTER_ID_MY}}
+      with:
+        coverageCommand: make test
     # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
     # Docs: https://getcomposer.org/doc/articles/scripts.md
 
