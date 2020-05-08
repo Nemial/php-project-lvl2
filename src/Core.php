@@ -16,7 +16,7 @@ function getFileContents(string $pathToFile): string
     return file_get_contents($pathToFile);
 }
 
-function decodeFile(string $file): array
+function decodeFileContents(string $file): array
 {
     return json_decode($file, true);
 }
@@ -32,7 +32,7 @@ function normalizeValue($value)
     return $value;
 }
 
-function genDiff(array $firstFile, array $secondFile)
+function genDiff(array $firstFile, array $secondFile): string
 {
     $keysFirstFile = array_keys($firstFile);
     $keysSecondFile = array_keys($secondFile);
