@@ -28,6 +28,7 @@
         "phpunit/phpunit": "^9.1"
     },
     "scripts": {
-        "phpcs": "phpcs"
+        "phpcs": "phpcs",
+        "test": "phpunit"
     }
 }
