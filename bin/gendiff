@@ -8,12 +8,8 @@ if (file_exists($autoloadPath1)) {
     require_once $autoloadPath2;
 }
 
-use function gendiff\Core\{
-    normalizePathToFile,
-    decodeFileContents,
-    getFileContents,
-    genDiff
-};
+use function gendiff\Core\{normalizePathToFile, genDiff};
+use function gendiff\Parser\parseFile;
 
 $doc = <<< DOC
 Generate diff
@@ -32,7 +28,7 @@ DOC;
 $args = Docopt::handle($doc);
 $pathToFile1 = normalizePathToFile($args['<firstFile>']);
 $pathToFile2 = normalizePathToFile($args['<secondFile>']);
-$firstFile = decodeFileContents(getFileContents($pathToFile1));
-$secondFile = decodeFileContents(getFileContents($pathToFile2));
+$firstFile = parseFile($pathToFile1);
+$secondFile = parseFile($pathToFile2);
 
 print_r(genDiff($firstFile, $secondFile));

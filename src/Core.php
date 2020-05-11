@@ -11,16 +11,6 @@ function normalizePathToFile(string $pathToFile): string
     return getcwd() . DIRECTORY_SEPARATOR . $pathToFile;
 }
 
-function getFileContents(string $pathToFile): string
-{
-    return file_get_contents($pathToFile);
-}
-
-function decodeFileContents(string $file): array
-{
-    return json_decode($file, true);
-}
-
 function normalizeValue($value)
 {
     if (is_bool($value)) {
