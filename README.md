@@ -6,5 +6,8 @@
 ## About the project
 Program to generate diff
 
-## How its Work
+## JSON format files
 [![Asciinema](https://asciinema.org/a/c1sLx9u5US7JVlezLWlm5uzsO.png)](https://asciinema.org/a/c1sLx9u5US7JVlezLWlm5uzsO)
+
+## YAML format files
+[![Asciinema](https://asciinema.org/a/jJ3j4wxmY431zyU6k8BCcngwq.png)](https://asciinema.org/a/jJ3j4wxmY431zyU6k8BCcngwq)
