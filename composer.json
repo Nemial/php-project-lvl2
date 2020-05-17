@@ -16,7 +16,8 @@
     "autoload": {
         "files": [
             "src/Core.php",
-            "src/Parser.php"
+            "src/Parser.php",
+            "src/Ast.php"
         ]
     },
     "require": {
