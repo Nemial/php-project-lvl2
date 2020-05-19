@@ -12,8 +12,11 @@ Program to generate diff
 ## YAML format files
 [![Asciinema](https://asciinema.org/a/jJ3j4wxmY431zyU6k8BCcngwq.png)](https://asciinema.org/a/jJ3j4wxmY431zyU6k8BCcngwq)
 
-## Deep JSON files
+## Pretty format
 [![Asciinema](https://asciinema.org/a/skEhjfgAmAZB2beoaYOu8PwX0.png)](https://asciinema.org/a/skEhjfgAmAZB2beoaYOu8PwX0)
 
 ## Plain format
 [![Asciinema](https://asciinema.org/a/9E1SWvL1jnDPzacTAwN2ptnFG.png)](https://asciinema.org/a/9E1SWvL1jnDPzacTAwN2ptnFG)
+
+## JSON format
+[![Asciinema](https://asciinema.org/a/lXqOllMMjC0jlkphpWennPS3z.png)](https://asciinema.org/a/lXqOllMMjC0jlkphpWennPS3z)
