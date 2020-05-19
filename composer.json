@@ -15,9 +15,10 @@
     ],
     "autoload": {
         "files": [
+            "src/Ast.php",
             "src/Core.php",
             "src/Parser.php",
-            "src/Ast.php",
+            "src/Formatters/JSON.php",
             "src/Formatters/Plain.php",
             "src/Formatters/Pretty.php"
         ]

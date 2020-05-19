@@ -4,7 +4,7 @@ namespace gendiff\Formatters\Pretty;
 
 use function gendiff\Ast\{
     getChildren,
-    getDeep,
+    getMultiplier,
     getName,
     getOldValue,
     getNewValue,
@@ -23,7 +23,7 @@ function render(array $tree): array
             $name = getName($node);
             $oldValue = getOldValue($node);
             if (getType($node) === "node") {
-                $gap = str_repeat(" ", COUNT_INDENT * getDeep($node));
+                $gap = str_repeat(" ", COUNT_INDENT * getMultiplier($node));
                 switch (getStatus($node)) {
                     case "unchanged":
                         $acc[] = "  {$gap}{$name}: {";
@@ -53,7 +53,7 @@ function render(array $tree): array
                 return $acc;
             } elseif (getType($node) === "leaf") {
                 $divisor = 2;
-                $gap = str_repeat(" ", COUNT_INDENT * (getDeep($node) / $divisor));
+                $gap = str_repeat(" ", COUNT_INDENT * (getMultiplier($node) / $divisor));
                 switch (getStatus($node)) {
                     case "unchanged":
                         $acc[] = "{$gap}     {$name}: {$oldValue}";

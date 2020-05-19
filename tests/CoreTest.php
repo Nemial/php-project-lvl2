@@ -30,7 +30,7 @@ class CoreTest extends TestCase
         $this->assertEquals($expected, genDiff($before, $after));
     }
 
-    public function testJson()
+    public function testPrettyFormat()
     {
         $pathToFileExpected = __DIR__ . "/fixtures/prettyExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
@@ -50,5 +50,16 @@ class CoreTest extends TestCase
         $before = parseFile($pathToFileBefore);
         $after = parseFile($pathToFileAfter);
         $this->assertEquals($expected, genDiff($before, $after, "plain"));
+    }
+
+    public function testJSONFormat()
+    {
+        $pathToFileExpected = __DIR__ . "/fixtures/jsonExpected.json";
+        $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
+        $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
+        $expected = file_get_contents($pathToFileExpected);
+        $before = parseFile($pathToFileBefore);
+        $after = parseFile($pathToFileAfter);
+        $this->assertEquals($expected, genDiff($before, $after, "json"));
     }
 }

@@ -4,11 +4,12 @@ namespace gendiff\Core;
 
 use gendiff\Formatters\Plain;
 use gendiff\Formatters\Pretty;
+use gendiff\Formatters\JSON;
 
 use function gendiff\Ast\generateAst;
 use function Funct\Collection\flattenAll;
 
-function genDiff(object $firstFile, object $secondFile, string $format = "pretty"): string
+function genDiff(object $firstFile, object $secondFile, string $format = "pretty")
 {
     $ast = generateAst($firstFile, $secondFile);
 
@@ -21,6 +22,9 @@ function genDiff(object $firstFile, object $secondFile, string $format = "pretty
         case "plain":
             $diffMap = Plain\render($ast);
             break;
+        case "json":
+            $diffMap = JSON\render($ast);
+            return json_encode($diffMap) . PHP_EOL;
         default:
             break;
     }
