@@ -50,7 +50,6 @@ function render(array $tree): array
                     default:
                         break;
                 }
-                return $acc;
             } elseif (getType($node) === "leaf") {
                 $divisor = 2;
                 $gap = str_repeat(" ", COUNT_INDENT * (getMultiplier($node) / $divisor));
@@ -72,8 +71,8 @@ function render(array $tree): array
                     default:
                         break;
                 }
-                return $acc;
             }
+            return $acc;
         },
         []
     );
