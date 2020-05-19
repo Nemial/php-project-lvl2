@@ -17,17 +17,19 @@
         "files": [
             "src/Core.php",
             "src/Parser.php",
-            "src/Ast.php"
+            "src/Ast.php",
+            "src/Formatters/Plain.php",
+            "src/Formatters/Pretty.php"
         ]
     },
     "require": {
-        "docopt/docopt": "^1.0.4",
-        "funct/funct": "^1.5.0",
+        "docopt/docopt": "^1.0",
+        "funct/funct": "^1.5",
         "ext-json": "*",
-        "symfony/yaml": "^5.0.8"
+        "symfony/yaml": "^5.0"
     },
     "require-dev": {
-        "squizlabs/php_codesniffer": "^3.5.5",
+        "squizlabs/php_codesniffer": "^3.5",
         "phpunit/phpunit": "^9.1"
     },
     "scripts": {
