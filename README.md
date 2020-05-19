@@ -14,3 +14,6 @@ Program to generate diff
 
 ## Deep JSON files
 [![Asciinema](https://asciinema.org/a/skEhjfgAmAZB2beoaYOu8PwX0.png)](https://asciinema.org/a/skEhjfgAmAZB2beoaYOu8PwX0)
+
+## Plain format
+[![Asciinema](https://asciinema.org/a/9E1SWvL1jnDPzacTAwN2ptnFG.png)](https://asciinema.org/a/9E1SWvL1jnDPzacTAwN2ptnFG)
