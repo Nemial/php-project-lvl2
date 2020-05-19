@@ -108,31 +108,25 @@ function generateAst(object $before, object $after): array
                             null,
                             $iter($varsBefore[$key], $varsAfter[$key], $newMultiplier, $newPath),
                         );
-                        return $acc;
-                    }
-
-                    if ($valueAfter !== $valueBefore) {
+                    } elseif ($valueAfter !== $valueBefore) {
                         $acc[] = makeNode($key, "leaf", "changed", $multiplier, $newPath, $valueBefore, $valueAfter);
-                        return $acc;
                     } else {
                         $acc[] = makeNode($key, "leaf", "unchanged", $multiplier, $newPath, $valueBefore);
-                        return $acc;
                     }
                 } elseif ($haveBeforeKey) {
                     if (is_object($varsBefore[$key])) {
                         $acc[] = makeNode($key, "node", "removed", $multiplier, $newPath, $valueBefore);
-                        return $acc;
+                    } else {
+                        $acc[] = makeNode($key, "leaf", "removed", $multiplier, $newPath, $valueBefore);
                     }
-                    $acc[] = makeNode($key, "leaf", "removed", $multiplier, $newPath, $valueBefore);
-                    return $acc;
                 } elseif ($haveAfterKey) {
                     if (is_object($varsAfter[$key])) {
                         $acc[] = makeNode($key, "node", "added", $multiplier, $newPath, $valueAfter);
-                        return $acc;
+                    } else {
+                        $acc[] = makeNode($key, "leaf", "added", $multiplier, $newPath, $valueAfter);
                     }
-                    $acc[] = makeNode($key, "leaf", "added", $multiplier, $newPath, $valueAfter);
-                    return $acc;
                 }
+                return $acc;
             },
             []
         );
