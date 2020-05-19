@@ -9,7 +9,7 @@ use gendiff\Formatters\JSON;
 use function gendiff\Ast\generateAst;
 use function Funct\Collection\flattenAll;
 
-function genDiff(object $firstFile, object $secondFile, string $format = "pretty")
+function genDiff(object $firstFile, object $secondFile, string $format = "pretty"): string
 {
     $ast = generateAst($firstFile, $secondFile);
 
