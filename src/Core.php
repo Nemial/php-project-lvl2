@@ -7,11 +7,15 @@ use gendiff\Formatters\Pretty;
 use gendiff\Formatters\JSON;
 
 use function gendiff\Ast\generateAst;
+use function gendiff\Parser\{normalizePathToFile, parseFile};
 use function Funct\Collection\flattenAll;
 
-function genDiff(object $firstFile, object $secondFile, string $format = "pretty"): string
+function genDiff(string $pathToFile1, string $pathToFile2, string $format = "pretty"): string
 {
-    $ast = generateAst($firstFile, $secondFile);
+    $before = parseFile(normalizePathToFile($pathToFile1));
+    $after = parseFile(normalizePathToFile($pathToFile2));
+
+    $ast = generateAst($before, $after);
 
     switch ($format) {
         case "pretty":

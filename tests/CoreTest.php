@@ -1,5 +1,7 @@
 <?php
 
+namespace gendiff\tests;
+
 use PHPUnit\Framework\TestCase;
 
 use function gendiff\Core\genDiff;
@@ -14,9 +16,7 @@ class CoreTest extends TestCase
         $pathToFileBefore = __DIR__ . "/fixtures/flatJson/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/flatJson/after.json";
         $expected = file_get_contents($pathToFileExpected);
-        $before = parseFile($pathToFileBefore);
-        $after = parseFile($pathToFileAfter);
-        $this->assertEquals($expected, genDiff($before, $after));
+        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
     public function testFlatYaml()
@@ -25,9 +25,7 @@ class CoreTest extends TestCase
         $pathToFileBefore = __DIR__ . "/fixtures/yaml/before.yaml";
         $pathToFileAfter = __DIR__ . "/fixtures/yaml/after.yaml";
         $expected = file_get_contents($pathToFileExpected);
-        $before = parseFile($pathToFileBefore);
-        $after = parseFile($pathToFileAfter);
-        $this->assertEquals($expected, genDiff($before, $after));
+        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
     public function testPrettyFormat()
@@ -36,9 +34,7 @@ class CoreTest extends TestCase
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
         $expected = file_get_contents($pathToFileExpected);
-        $before = parseFile($pathToFileBefore);
-        $after = parseFile($pathToFileAfter);
-        $this->assertEquals($expected, genDiff($before, $after));
+        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
     public function testPlainFormat()
@@ -47,9 +43,7 @@ class CoreTest extends TestCase
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
         $expected = file_get_contents($pathToFileExpected);
-        $before = parseFile($pathToFileBefore);
-        $after = parseFile($pathToFileAfter);
-        $this->assertEquals($expected, genDiff($before, $after, "plain"));
+        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "plain"));
     }
 
     public function testJSONFormat()
@@ -58,8 +52,6 @@ class CoreTest extends TestCase
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
         $expected = file_get_contents($pathToFileExpected);
-        $before = parseFile($pathToFileBefore);
-        $after = parseFile($pathToFileAfter);
-        $this->assertEquals($expected, genDiff($before, $after, "json"));
+        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "json"));
     }
 }
