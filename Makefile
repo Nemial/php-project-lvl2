@@ -1,4 +1,8 @@
+install:
+	composer install
 lint:
-	composer run-script phpcs -- --standard=PSR12 src bin
+	composer phpcs -- --standard=PSR12 src bin tests
 test:
-	composer run-script test -- tests --whitelist tests --coverage-clover coverage-report
+	composer phpunit -- tests
+test-coverage:
+	composer phpunit -- tests --whitelist tests --coverage-clover coverage-report

@@ -9,7 +9,6 @@ if (file_exists($autoloadPath1)) {
 }
 
 use function gendiff\Core\genDiff;
-use function gendiff\Parser\{parseFile, normalizePathToFile};
 
 $doc = <<< DOC
 Generate diff
@@ -26,9 +25,7 @@ Options:
 DOC;
 
 $args = Docopt::handle($doc);
-$pathToFile1 = normalizePathToFile($args['<firstFile>']);
-$pathToFile2 = normalizePathToFile($args['<secondFile>']);
+$pathToFile1 = $args['<firstFile>'];
+$pathToFile2 = $args['<secondFile>'];
 $format = $args['--format'];
-$before = parseFile($pathToFile1);
-$after = parseFile($pathToFile2);
-print_r(genDiff($before, $after, $format));
+print_r(genDiff($pathToFile1, $pathToFile2, $format));
