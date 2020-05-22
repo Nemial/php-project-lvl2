@@ -2,6 +2,8 @@
 
 namespace gendiff\Ast;
 
+use function Funct\Collection\union;
+
 function makeNode($name, $type, $oldValue = null, $newValue = null, $children = null)
 {
     return [
@@ -55,18 +57,11 @@ function normalizeValue($value)
     return $value;
 }
 
-function getUnionKeys($before, $after)
-{
-    $vars = array_merge($before, $after);
-
-    return array_unique(array_keys($vars));
-}
-
 function generateAst(object $before, object $after): array
 {
     $dataBefore = get_object_vars($before);
     $dataAfter = get_object_vars($after);
-    $keys = getUnionKeys($dataBefore, $dataAfter);
+    $keys = union(array_keys($dataBefore), array_keys($dataAfter));
 
     return array_map(
         function ($key) use ($dataBefore, $dataAfter) {
