@@ -25,7 +25,6 @@ function render(array $tree): array
 
                 if (getType($node) === "object") {
                     $newMultiplier = $multiplier + 1;
-                    $gap = str_repeat(" ", $currentIndent);
                     $acc[] = "{$gap}{$name}: {";
                     $data = $iter(getChildren($node), $newMultiplier);
                     $acc[] = flattenAll($data);
