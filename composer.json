@@ -17,6 +17,7 @@
         "files": [
             "src/Ast.php",
             "src/Core.php",
+            "src/File.php",
             "src/Parser.php",
             "src/Formatters/JSON.php",
             "src/Formatters/Plain.php",

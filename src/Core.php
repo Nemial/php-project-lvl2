@@ -7,27 +7,9 @@ use gendiff\Formatters\Pretty;
 use gendiff\Formatters\JSON;
 
 use function gendiff\Ast\generateAst;
+use function gendiff\File\{getFileContents, getFileExtension};
 use function gendiff\Parser\parseFileContents;
 use function Funct\Collection\flattenAll;
-
-function normalizePathToFile(string $pathToFile): string
-{
-    if (file_exists($pathToFile)) {
-        return $pathToFile;
-    }
-
-    return getcwd() . DIRECTORY_SEPARATOR . $pathToFile;
-}
-
-function getFileExtension(string $file): string
-{
-    return pathinfo(normalizePathToFile($file), PATHINFO_EXTENSION);
-}
-
-function getFileContents(string $file): string
-{
-    return file_get_contents(normalizePathToFile($file));
-}
 
 function makeDiffMap($ast, $format)
 {

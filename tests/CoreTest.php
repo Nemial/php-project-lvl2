@@ -5,7 +5,7 @@ namespace gendiff\tests;
 use PHPUnit\Framework\TestCase;
 
 use function gendiff\Core\genDiff;
-use function gendiff\Core\getFileContents;
+use function gendiff\File\getFileContents;
 
 class CoreTest extends TestCase
 {
