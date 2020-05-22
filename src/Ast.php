@@ -2,16 +2,13 @@
 
 namespace gendiff\Ast;
 
-function makeNode($name, $type, $status, $multiplier, $path, $oldValue = null, $newValue = null, $children = null)
+function makeNode($name, $type, $oldValue = null, $newValue = null, $children = null)
 {
     return [
         "name" => $name,
         "type" => $type,
         "oldValue" => $oldValue,
         "newValue" => $newValue,
-        "status" => $status,
-        "multiplier" => $multiplier,
-        "path" => $path,
         "children" => $children
     ];
 }
@@ -24,16 +21,6 @@ function getName($node)
 function getType($node)
 {
     return $node["type"];
-}
-
-function getStatus($node)
-{
-    return $node["status"];
-}
-
-function getMultiplier($node)
-{
-    return $node["multiplier"];
 }
 
 function getOldValue($node)
@@ -49,16 +36,6 @@ function getNewValue($node)
 function getChildren($node)
 {
     return $node["children"];
-}
-
-function getPath($node)
-{
-    return $node["path"];
-}
-
-function haveChildren($node)
-{
-    return getChildren($node) !== null;
 }
 
 function normalizeValue($value)
@@ -78,59 +55,46 @@ function normalizeValue($value)
     return $value;
 }
 
+function getUnionKeys($before, $after)
+{
+    $vars = array_merge($before, $after);
+
+    return array_unique(array_keys($vars));
+}
+
 function generateAst(object $before, object $after): array
 {
-    $iter = function ($before, $after, $multiplier, $path) use (&$iter) {
-        $varsBefore = get_object_vars($before);
-        $varsAfter = get_object_vars($after);
-        $allVars = array_merge($varsBefore, $varsAfter);
-        $allKeys = array_unique(array_keys($allVars));
+    $dataBefore = get_object_vars($before);
+    $dataAfter = get_object_vars($after);
+    $keys = getUnionKeys($dataBefore, $dataAfter);
 
-        return array_reduce(
-            $allKeys,
-            function ($acc, $key) use ($varsBefore, $varsAfter, $multiplier, $path, $iter) {
-                $haveAfterKey = array_key_exists($key, $varsAfter);
-                $haveBeforeKey = array_key_exists($key, $varsBefore);
-                $valueAfter = $haveAfterKey ? normalizeValue($varsAfter[$key]) : null;
-                $valueBefore = $haveBeforeKey ? normalizeValue($varsBefore[$key]) : null;
-                $newPath = $path === "" ? "{$key}" : "{$path}.{$key}";
+    return array_map(
+        function ($key) use ($dataBefore, $dataAfter) {
+            $haveAfterKey = array_key_exists($key, $dataAfter);
+            $haveBeforeKey = array_key_exists($key, $dataBefore);
+            $valueAfter = $haveAfterKey ? normalizeValue($dataAfter[$key]) : null;
+            $valueBefore = $haveBeforeKey ? normalizeValue($dataBefore[$key]) : null;
 
-                if ($haveAfterKey && $haveBeforeKey) {
-                    if (is_object($varsAfter[$key]) && is_object($varsBefore[$key])) {
-                        $newMultiplier = $multiplier + 2;
-                        $acc[] = makeNode(
-                            $key,
-                            "node",
-                            "unchanged",
-                            $multiplier,
-                            $newPath,
-                            null,
-                            null,
-                            $iter($varsBefore[$key], $varsAfter[$key], $newMultiplier, $newPath),
-                        );
-                    } elseif ($valueAfter !== $valueBefore) {
-                        $acc[] = makeNode($key, "leaf", "changed", $multiplier, $newPath, $valueBefore, $valueAfter);
-                    } else {
-                        $acc[] = makeNode($key, "leaf", "unchanged", $multiplier, $newPath, $valueBefore);
-                    }
-                } elseif ($haveBeforeKey) {
-                    if (is_object($varsBefore[$key])) {
-                        $acc[] = makeNode($key, "node", "removed", $multiplier, $newPath, $valueBefore);
-                    } else {
-                        $acc[] = makeNode($key, "leaf", "removed", $multiplier, $newPath, $valueBefore);
-                    }
-                } elseif ($haveAfterKey) {
-                    if (is_object($varsAfter[$key])) {
-                        $acc[] = makeNode($key, "node", "added", $multiplier, $newPath, $valueAfter);
-                    } else {
-                        $acc[] = makeNode($key, "leaf", "added", $multiplier, $newPath, $valueAfter);
-                    }
+            if ($haveAfterKey && $haveBeforeKey) {
+                if (is_object($dataAfter[$key]) && is_object($dataBefore[$key])) {
+                    return makeNode(
+                        $key,
+                        "object",
+                        null,
+                        null,
+                        generateAst($dataBefore[$key], $dataAfter[$key]),
+                    );
+                } elseif ($valueAfter !== $valueBefore) {
+                    return makeNode($key, "changed", $valueBefore, $valueAfter);
+                } else {
+                    return makeNode($key, "unchanged", $valueBefore);
                 }
-                return $acc;
-            },
-            []
-        );
-    };
-
-    return $iter($before, $after, 1, "");
+            } elseif ($haveBeforeKey) {
+                return makeNode($key, "removed", $valueBefore);
+            } elseif ($haveAfterKey) {
+                return makeNode($key, "added", $valueAfter);
+            }
+        },
+        $keys
+    );
 }

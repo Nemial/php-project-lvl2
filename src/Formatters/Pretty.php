@@ -4,76 +4,80 @@ namespace gendiff\Formatters\Pretty;
 
 use function gendiff\Ast\{
     getChildren,
-    getMultiplier,
     getName,
     getOldValue,
     getNewValue,
     getType,
-    getStatus,
-    haveChildren
 };
+use function Funct\Collection\flattenAll;
 
-const COUNT_INDENT = 2;
+const COUNT_INDENT = 4;
 
 function render(array $tree): array
 {
-    return array_reduce(
-        $tree,
-        function ($acc, $node) {
-            $name = getName($node);
-            $oldValue = getOldValue($node);
-            if (getType($node) === "node") {
-                $gap = str_repeat(" ", COUNT_INDENT * getMultiplier($node));
-                switch (getStatus($node)) {
-                    case "unchanged":
-                        $acc[] = "  {$gap}{$name}: {";
-                        if (haveChildren($node)) {
-                            $acc[] = render(getChildren($node));
-                        } else {
-                            $key = array_key_first($oldValue);
-                            $acc[] = "{$gap} {$key}: {$oldValue[$key]}";
-                        }
-                        $acc[] = "{$gap}  }";
-                        break;
-                    case "removed":
-                        $acc[] = "{$gap}- {$name}: {";
-                        $key = array_key_first($oldValue);
-                        $acc[] = "{$gap}      {$key}: {$oldValue[$key]}";
-                        $acc[] = "{$gap}  }";
-                        break;
-                    case "added":
-                        $acc[] = "{$gap}+ {$name}: {";
-                        $key = array_key_first($oldValue);
-                        $acc[] = "{$gap}      {$key}: {$oldValue[$key]}";
-                        $acc[] = "{$gap}  }";
-                        break;
-                    default:
-                        break;
+    $iter = function ($tree, $multiplier) use (&$iter) {
+        return array_reduce(
+            $tree,
+            function ($acc, $node) use ($multiplier, $iter) {
+                $name = getName($node);
+                $currentIndent = COUNT_INDENT * $multiplier;
+                $gap = str_repeat(" ", $currentIndent);
+
+                if (getType($node) === "object") {
+                    $newMultiplier = $multiplier + 1;
+                    $gap = str_repeat(" ", $currentIndent);
+                    $acc[] = "{$gap}{$name}: {";
+                    $data = $iter(getChildren($node), $newMultiplier);
+                    $acc[] = flattenAll($data);
+                    $acc[] = "{$gap}}";
+                    return $acc;
                 }
-            } elseif (getType($node) === "leaf") {
-                $divisor = 2;
-                $gap = str_repeat(" ", COUNT_INDENT * (getMultiplier($node) / $divisor));
-                switch (getStatus($node)) {
+
+                $oldValue = getOldValue($node);
+                $isComplexValue = is_array($oldValue);
+                $valueIndent = $currentIndent + COUNT_INDENT;
+                $shortIndent = (COUNT_INDENT * $multiplier) - 2;
+                $shortGap = str_repeat(" ", $shortIndent);
+                $valueGap = str_repeat(" ", $valueIndent);
+
+                switch (getType($node)) {
                     case "unchanged":
-                        $acc[] = "{$gap}     {$name}: {$oldValue}";
+                        $acc[] = "{$gap}{$name}: {$oldValue}";
                         break;
                     case "changed":
                         $newValue = getNewValue($node);
-                        $acc[] = "{$gap}   + {$name}: {$newValue}";
-                        $acc[] = "{$gap}   - {$name}: {$oldValue}";
-                        break;
-                    case "removed":
-                        $acc[] = "{$gap}   - {$name}: {$oldValue}";
+                        $acc[] = "{$shortGap}+ {$name}: {$newValue}";
+                        $acc[] = "{$shortGap}- {$name}: {$oldValue}";
                         break;
                     case "added":
-                        $acc[] = "{$gap}   + {$name}: {$oldValue}";
+                        if ($isComplexValue) {
+                            $acc[] = "{$shortGap}+ {$name}: {";
+                            foreach ($oldValue as $key => $value) {
+                                $acc[] = "{$valueGap}{$key}: {$value}";
+                            }
+                            $acc[] = "{$gap}}";
+                        } else {
+                            $acc[] = "{$shortGap}+ {$name}: {$oldValue}";
+                        }
+                        break;
+                    case "removed":
+                        if ($isComplexValue) {
+                            $acc[] = "{$shortGap}- {$name}: {";
+                            foreach ($oldValue as $key => $value) {
+                                $acc[] = "{$valueGap}{$key}: {$value}";
+                            }
+                            $acc[] = "{$gap}}";
+                        } else {
+                            $acc[] = "{$shortGap}- {$name}: {$oldValue}";
+                        }
                         break;
                     default:
                         break;
                 }
-            }
-            return $acc;
-        },
-        []
-    );
+                return $acc;
+            },
+            []
+        );
+    };
+    return $iter($tree, 1);
 }

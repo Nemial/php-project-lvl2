@@ -6,8 +6,6 @@ use function gendiff\Ast\{
     getChildren,
     getName,
     getType,
-    getStatus,
-    haveChildren
 };
 
 function render(array $tree): array
@@ -16,11 +14,11 @@ function render(array $tree): array
         $tree,
         function ($acc, $node) {
             $name = getName($node);
-            if (getType($node) === "node" && haveChildren($node)) {
+            if (getType($node) === "object") {
                 $acc[$name] = render(getChildren($node));
                 return $acc;
             }
-            switch (getStatus($node)) {
+            switch (getType($node)) {
                 case "changed":
                     $acc[$name] = "changed";
                     break;
