@@ -8,12 +8,12 @@ function normalizePathToFile(string $pathToFile): string
         return $pathToFile;
     }
 
-    return getcwd() . DIRECTORY_SEPARATOR . $pathToFile;
+    return realpath($pathToFile);
 }
 
-function getFileExtension(string $file): string
+function getFileExtension(string $pathToFile): string
 {
-    return pathinfo(normalizePathToFile($file), PATHINFO_EXTENSION);
+    return pathinfo(normalizePathToFile($pathToFile), PATHINFO_EXTENSION);
 }
 
 function getFileContents(string $file): string

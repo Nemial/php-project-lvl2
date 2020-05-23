@@ -4,7 +4,7 @@ namespace gendiff\Parser;
 
 use Symfony\Component\Yaml\Yaml;
 
-function parseFileContents(string $fileContents, $fileExtension): object
+function parse(string $fileContents, $fileExtension): object
 {
     switch ($fileExtension) {
         case "json":

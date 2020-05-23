@@ -13,7 +13,7 @@ use function Funct\Collection\flattenAll;
 
 const COUNT_INDENT = 4;
 
-function render(array $tree): array
+function render(array $tree): string
 {
     $iter = function ($tree, $multiplier) use (&$iter) {
         return array_reduce(
@@ -78,5 +78,12 @@ function render(array $tree): array
             []
         );
     };
-    return $iter($tree, 1);
+    $rendered = $iter($tree, 1);
+
+    array_unshift($rendered, '{');
+    array_push($rendered, '}');
+
+    $flatten = flattenAll($rendered);
+
+    return implode("\n", $flatten) . "\n";
 }

@@ -9,8 +9,9 @@ use function gendiff\Ast\{
     getNewValue,
     getType
 };
+use function Funct\Collection\flattenAll;
 
-function render(array $tree): array
+function render(array $tree): string
 {
     $iter = function ($tree, $path) use (&$iter) {
         return array_reduce(
@@ -44,5 +45,8 @@ function render(array $tree): array
     };
 
 
-    return $iter($tree, '');
+    $rendered = $iter($tree, '');
+    $flatten = flattenAll($rendered);
+
+    return implode("\n", $flatten) . "\n";
 }
