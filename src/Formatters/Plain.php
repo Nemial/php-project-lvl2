@@ -29,8 +29,7 @@ function plainRender(array $tree, string $path = ""): array
             $currentPath = $path === '' ? "{$name}" : "{$path}.{$name}";
 
             if (getType($node) === "object") {
-                $data = plainRender(getChildren($node), $currentPath);
-                return flattenAll($data);
+                return plainRender(getChildren($node), $currentPath);
             }
             $oldValue = is_object(getOldValue($node)) ? "complex value" : getOldValue($node);
             switch (getType($node)) {

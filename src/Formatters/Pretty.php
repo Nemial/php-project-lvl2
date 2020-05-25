@@ -56,9 +56,9 @@ function prettyRender($tree, $multiplier): array
                 $data = [];
                 $data[] = "{$gap}{$name}: {";
                 $children = prettyRender(getChildren($node), $newMultiplier);
-                $data[] = flattenAll($children);
+                $data[] = $children;
                 $data[] = "{$gap}}";
-                return flattenAll($data);
+                return $data;
             }
 
             $oldValue = stringify(getOldValue($node));
@@ -76,7 +76,7 @@ function prettyRender($tree, $multiplier): array
                     $data = [];
                     $data[] = "{$shortGap}+ {$name}: {$newValue}";
                     $data[] = "{$shortGap}- {$name}: {$oldValue}";
-                    return flattenAll($data);
+                    return $data;
                 case "added":
                     if ($isComplexValue) {
                         $data = [];
@@ -85,7 +85,7 @@ function prettyRender($tree, $multiplier): array
                             $data[] = "{$valueGap}{$key}: {$value}";
                         }
                         $data[] = "{$gap}}";
-                        return flattenAll($data);
+                        return $data;
                     } else {
                         return "{$shortGap}+ {$name}: {$oldValue}";
                     }
@@ -97,11 +97,10 @@ function prettyRender($tree, $multiplier): array
                             $data[] = "{$valueGap}{$key}: {$value}";
                         }
                         $data[] = "{$gap}}";
-                        return flattenAll($data);
+                        return $data;
                     } else {
                         return "{$shortGap}- {$name}: {$oldValue}";
                     }
-                    break;
                 default:
                     break;
             }
