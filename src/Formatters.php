@@ -15,7 +15,7 @@ function makeDiffMap($ast, $format)
             $diffMap = JSON\render($ast);
             break;
         default:
-            throw new \Exception("Undefined format");
+            throw new \Exception("Unsupported format {$format}");
     }
 
     return $diffMap;

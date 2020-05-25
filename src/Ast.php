@@ -40,23 +40,6 @@ function getChildren($node)
     return $node["children"];
 }
 
-function normalizeValue($value)
-{
-    if (is_bool($value)) {
-        if ($value) {
-            return 'true';
-        } else {
-            return 'false';
-        }
-    }
-
-    if (is_object($value)) {
-        return get_object_vars($value);
-    }
-
-    return $value;
-}
-
 function generateAst(object $before, object $after): array
 {
     $dataBefore = get_object_vars($before);
@@ -64,30 +47,25 @@ function generateAst(object $before, object $after): array
     $keys = union(array_keys($dataBefore), array_keys($dataAfter));
 
     return array_map(
-        function ($key) use ($dataBefore, $dataAfter) {
-            $haveAfterKey = array_key_exists($key, $dataAfter);
-            $haveBeforeKey = array_key_exists($key, $dataBefore);
-            $valueAfter = $haveAfterKey ? normalizeValue($dataAfter[$key]) : null;
-            $valueBefore = $haveBeforeKey ? normalizeValue($dataBefore[$key]) : null;
-
-            if ($haveAfterKey && $haveBeforeKey) {
-                if (is_object($dataAfter[$key]) && is_object($dataBefore[$key])) {
+        function ($key) use ($before, $after) {
+            if (!property_exists($after, $key)) {
+                return makeNode($key, "removed", $before->$key);
+            } elseif (!property_exists($before, $key)) {
+                return makeNode($key, "added", $after->$key);
+            } else {
+                if (is_object($before->$key) && is_object($after->$key)) {
                     return makeNode(
                         $key,
                         "object",
                         null,
                         null,
-                        generateAst($dataBefore[$key], $dataAfter[$key]),
+                        generateAst($before->$key, $after->$key),
                     );
-                } elseif ($valueAfter !== $valueBefore) {
-                    return makeNode($key, "changed", $valueBefore, $valueAfter);
+                } elseif ($before->$key !== $after->$key) {
+                    return makeNode($key, "changed", $before->$key, $after->$key);
                 } else {
-                    return makeNode($key, "unchanged", $valueBefore);
+                    return makeNode($key, "unchanged", $before->$key);
                 }
-            } elseif ($haveBeforeKey) {
-                return makeNode($key, "removed", $valueBefore);
-            } elseif ($haveAfterKey) {
-                return makeNode($key, "added", $valueAfter);
             }
         },
         $keys
