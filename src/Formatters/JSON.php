@@ -4,5 +4,5 @@ namespace gendiff\Formatters\JSON;
 
 function render(array $tree): string
 {
-    return json_encode($tree) . "\n";
+    return json_encode($tree);
 }

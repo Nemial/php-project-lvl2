@@ -2,21 +2,17 @@
 
 namespace gendiff\Formatters;
 
-function makeDiffMap($ast, $format)
+function format($ast, $format)
 {
     switch ($format) {
         case "pretty":
-            $diffMap = Pretty\render($ast);
-            break;
+            return Pretty\render($ast);
         case "plain":
-            $diffMap = Plain\render($ast);
+            return Plain\render($ast);
             break;
         case "json":
-            $diffMap = JSON\render($ast);
-            break;
+            return JSON\render($ast);
         default:
             throw new \Exception("Unsupported format {$format}");
     }
-
-    return $diffMap;
 }

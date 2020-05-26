@@ -32,7 +32,7 @@ function stringify($value)
 
 function render(array $tree): string
 {
-    $rendered = prettyRender($tree, 1);
+    $rendered = buildPrettyRender($tree, 1);
 
     array_unshift($rendered, '{');
     array_push($rendered, '}');
@@ -40,57 +40,55 @@ function render(array $tree): string
     $flatten = flattenAll($rendered);
     $filtered = array_filter($flatten, fn($item) => !is_null($item));
 
-    return implode("\n", $filtered) . "\n";
+    return implode("\n", $filtered);
 }
 
-function prettyRender($tree, $multiplier): array
+function buildPrettyRender($tree, $multiplier): array
 {
     return array_map(
         function ($node) use ($multiplier) {
             $name = getName($node);
             $currentIndent = COUNT_INDENT * $multiplier;
             $gap = str_repeat(" ", $currentIndent);
-
-            if (getType($node) === "object") {
-                $newMultiplier = $multiplier + 1;
-                $data = [];
-                $data[] = "{$gap}{$name}: {";
-                $children = prettyRender(getChildren($node), $newMultiplier);
-                $data[] = $children;
-                $data[] = "{$gap}}";
-                return $data;
-            }
-
             $oldValue = stringify(getOldValue($node));
-            $isComplexValue = is_array($oldValue);
+            $newValue = stringify(getNewValue($node));
+            $isComplexOldValue = is_array($oldValue);
+            $isComplexNewValue = is_array($newValue);
             $valueIndent = $currentIndent + COUNT_INDENT;
             $shortIndent = (COUNT_INDENT * $multiplier) - 2;
             $shortGap = str_repeat(" ", $shortIndent);
             $valueGap = str_repeat(" ", $valueIndent);
 
             switch (getType($node)) {
+                case "object":
+                    $newMultiplier = $multiplier + 1;
+                    $data = [];
+                    $data[] = "{$gap}{$name}: {";
+                    $children = buildPrettyRender(getChildren($node), $newMultiplier);
+                    $data[] = $children;
+                    $data[] = "{$gap}}";
+                    return $data;
                 case "unchanged":
                     return "{$gap}{$name}: {$oldValue}";
                 case "changed":
-                    $newValue = stringify(getNewValue($node));
                     $data = [];
                     $data[] = "{$shortGap}+ {$name}: {$newValue}";
                     $data[] = "{$shortGap}- {$name}: {$oldValue}";
                     return $data;
                 case "added":
-                    if ($isComplexValue) {
+                    if ($isComplexNewValue) {
                         $data = [];
                         $data[] = "{$shortGap}+ {$name}: {";
-                        foreach ($oldValue as $key => $value) {
+                        foreach ($newValue as $key => $value) {
                             $data[] = "{$valueGap}{$key}: {$value}";
                         }
                         $data[] = "{$gap}}";
                         return $data;
                     } else {
-                        return "{$shortGap}+ {$name}: {$oldValue}";
+                        return "{$shortGap}+ {$name}: {$newValue}";
                     }
                 case "removed":
-                    if ($isComplexValue) {
+                    if ($isComplexOldValue) {
                         $data = [];
                         $data[] = "{$shortGap}- {$name}: {";
                         foreach ($oldValue as $key => $value) {
@@ -102,7 +100,8 @@ function prettyRender($tree, $multiplier): array
                         return "{$shortGap}- {$name}: {$oldValue}";
                     }
                 default:
-                    break;
+                    $type = getType($node);
+                    throw new \Exception("Unsupported type node {$type}");
             }
         },
         $tree

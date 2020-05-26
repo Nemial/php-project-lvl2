@@ -5,7 +5,7 @@ namespace gendiff\Core;
 use function gendiff\Ast\generateAst;
 use function gendiff\File\{getFileContents, getFileExtension};
 use function gendiff\Parser\parse;
-use function gendiff\Formatters\makeDiffMap;
+use function gendiff\Formatters\format;
 
 function genDiff(string $pathToFile1, string $pathToFile2, string $format = "pretty"): string
 {
@@ -18,7 +18,7 @@ function genDiff(string $pathToFile1, string $pathToFile2, string $format = "pre
 
     $ast = generateAst($before, $after);
 
-    $diffMap = makeDiffMap($ast, $format);
+    $diffMap = format($ast, $format);
 
     return $diffMap;
 }

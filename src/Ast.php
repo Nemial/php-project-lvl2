@@ -51,20 +51,22 @@ function generateAst(object $before, object $after): array
             if (!property_exists($after, $key)) {
                 return makeNode($key, "removed", $before->$key);
             } elseif (!property_exists($before, $key)) {
-                return makeNode($key, "added", $after->$key);
+                return makeNode($key, "added", null, $after->$key);
             } else {
-                if (is_object($before->$key) && is_object($after->$key)) {
+                $beforeValue = $before->$key;
+                $afterValue = $after->$key;
+                if (is_object($beforeValue) && is_object($afterValue)) {
                     return makeNode(
                         $key,
                         "object",
                         null,
                         null,
-                        generateAst($before->$key, $after->$key),
+                        generateAst($beforeValue, $afterValue),
                     );
-                } elseif ($before->$key !== $after->$key) {
-                    return makeNode($key, "changed", $before->$key, $after->$key);
+                } elseif ($beforeValue !== $afterValue) {
+                    return makeNode($key, "changed", $beforeValue, $afterValue);
                 } else {
-                    return makeNode($key, "unchanged", $before->$key);
+                    return makeNode($key, "unchanged", $beforeValue);
                 }
             }
         },

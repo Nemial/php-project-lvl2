@@ -15,7 +15,7 @@ class CoreTest extends TestCase
         $pathToFileExpected = __DIR__ . "/fixtures/flatExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/flatJson/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/flatJson/after.json";
-        $expected = getFileContents($pathToFileExpected);
+        $expected = trim(getFileContents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
@@ -24,7 +24,7 @@ class CoreTest extends TestCase
         $pathToFileExpected = __DIR__ . "/fixtures/flatExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/yaml/before.yaml";
         $pathToFileAfter = __DIR__ . "/fixtures/yaml/after.yaml";
-        $expected = getFileContents($pathToFileExpected);
+        $expected = trim(getFileContents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
@@ -33,7 +33,7 @@ class CoreTest extends TestCase
         $pathToFileExpected = __DIR__ . "/fixtures/prettyExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = getFileContents($pathToFileExpected);
+        $expected = trim(getFileContents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
@@ -42,7 +42,7 @@ class CoreTest extends TestCase
         $pathToFileExpected = __DIR__ . "/fixtures/plainExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = getFileContents($pathToFileExpected);
+        $expected = trim(getFileContents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "plain"));
     }
 
@@ -51,7 +51,7 @@ class CoreTest extends TestCase
         $pathToFileExpected = __DIR__ . "/fixtures/jsonExpected.json";
         $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
         $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = getFileContents($pathToFileExpected);
+        $expected = trim(getFileContents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "json"));
     }
 }
