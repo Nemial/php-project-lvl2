@@ -13,7 +13,7 @@ use function Funct\Collection\flattenAll;
 
 const COUNT_INDENT = 4;
 
-function stringify($value)
+function stringify($value, $valueGap, $gap)
 {
     if (is_bool($value)) {
         if ($value) {
@@ -24,7 +24,14 @@ function stringify($value)
     }
 
     if (is_object($value)) {
-        return get_object_vars($value);
+        $data = [];
+        $currentValue = get_object_vars($value);
+        foreach ($currentValue as $key => $value) {
+            $data[] = "{$valueGap}{$key}: {$value}";
+        }
+        array_unshift($data, "{");
+        array_push($data, "{$gap}}");
+        return implode("\n", $data);
     }
 
     return $value;
@@ -50,14 +57,12 @@ function buildPrettyRender($tree, $multiplier): array
             $name = getName($node);
             $currentIndent = COUNT_INDENT * $multiplier;
             $gap = str_repeat(" ", $currentIndent);
-            $oldValue = stringify(getOldValue($node));
-            $newValue = stringify(getNewValue($node));
-            $isComplexOldValue = is_array($oldValue);
-            $isComplexNewValue = is_array($newValue);
             $valueIndent = $currentIndent + COUNT_INDENT;
             $shortIndent = (COUNT_INDENT * $multiplier) - 2;
             $shortGap = str_repeat(" ", $shortIndent);
             $valueGap = str_repeat(" ", $valueIndent);
+            $oldValue = stringify(getOldValue($node), $valueGap, $gap);
+            $newValue = stringify(getNewValue($node), $valueGap, $gap);
 
             switch (getType($node)) {
                 case "object":
@@ -76,29 +81,9 @@ function buildPrettyRender($tree, $multiplier): array
                     $data[] = "{$shortGap}- {$name}: {$oldValue}";
                     return $data;
                 case "added":
-                    if ($isComplexNewValue) {
-                        $data = [];
-                        $data[] = "{$shortGap}+ {$name}: {";
-                        foreach ($newValue as $key => $value) {
-                            $data[] = "{$valueGap}{$key}: {$value}";
-                        }
-                        $data[] = "{$gap}}";
-                        return $data;
-                    } else {
-                        return "{$shortGap}+ {$name}: {$newValue}";
-                    }
+                    return "{$shortGap}+ {$name}: {$newValue}";
                 case "removed":
-                    if ($isComplexOldValue) {
-                        $data = [];
-                        $data[] = "{$shortGap}- {$name}: {";
-                        foreach ($oldValue as $key => $value) {
-                            $data[] = "{$valueGap}{$key}: {$value}";
-                        }
-                        $data[] = "{$gap}}";
-                        return $data;
-                    } else {
-                        return "{$shortGap}- {$name}: {$oldValue}";
-                    }
+                    return "{$shortGap}- {$name}: {$oldValue}";
                 default:
                     $type = getType($node);
                     throw new \Exception("Unsupported type node {$type}");

@@ -9,36 +9,43 @@ use function gendiff\Ast\{
     getNewValue,
     getType
 };
-use function gendiff\Formatters\Pretty\stringify;
+
+function stringify($value)
+{
+    if (is_bool($value)) {
+        if ($value) {
+            return 'true';
+        } else {
+            return 'false';
+        }
+    }
+
+    if (is_object($value)) {
+        return "complex value";
+    }
+
+    return $value;
+}
 
 function render(array $tree): string
 {
-    $filtered = array_filter($tree, fn($node) => getType($node) !== "unchanged");
-    $filteredTree = array_map(
-        function ($node) {
-            if (getType($node) === "object") {
-                $node["children"] = array_filter(getChildren($node), fn($child) => getType($child) !== "unchanged");
-                return $node;
-            }
-            return $node;
-        },
-        $filtered
-    );
-    $rendered = buildPlainRender($filteredTree, '');
-    return $rendered;
+    return buildPlainRender($tree, '');
 }
 
 function buildPlainRender(array $tree, string $path = ""): string
 {
+    $filtered = array_filter($tree, fn($node) => getType($node) !== "unchanged");
+
     return implode(
         "\n",
         array_map(
             function ($node) use ($path) {
                 $name = getName($node);
+                $type = getType($node);
                 $currentPath = "{$path}{$name}";
-                $oldValue = is_object(getOldValue($node)) ? "complex value" : stringify(getOldValue($node));
-                $newValue = is_object(getNewValue($node)) ? "complex value" : stringify(getNewValue($node));
-                switch (getType($node)) {
+                $oldValue = stringify(getOldValue($node));
+                $newValue = stringify(getNewValue($node));
+                switch ($type) {
                     case "object":
                         $newPath = "{$currentPath}.";
                         return buildPlainRender(getChildren($node), $newPath);
@@ -49,11 +56,10 @@ function buildPlainRender(array $tree, string $path = ""): string
                     case "removed":
                         return "Property '{$currentPath}' was removed";
                     default:
-                        $type = getType($node);
                         throw new \Exception("Unsupported type node {$type}");
                 }
             },
-            $tree
+            $filtered
         )
     );
 }
