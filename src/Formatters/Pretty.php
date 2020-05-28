@@ -33,7 +33,7 @@ function stringify($value, $deep)
             },
             $keys
         );
-        return "{\n" . implode("\n", $data) . "{$gap}}\n";
+        return "{" . "\n" . implode("\n", $data) . "\n" . "{$gap}}";
     }
 
     return $value;
@@ -46,7 +46,7 @@ function render(array $tree): string
     $flatten = flattenAll($builded);
     $filtered = array_filter($flatten, fn($item) => !is_null($item));
 
-    return "{\n" . implode("\n", $filtered) . "\n}";
+    return "{" . "\n" . implode("\n", $filtered) . "\n" . "}";
 }
 
 function build($tree, $deep): array
