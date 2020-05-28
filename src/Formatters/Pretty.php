@@ -13,7 +13,7 @@ use function Funct\Collection\flattenAll;
 
 const COUNT_INDENT = 4;
 
-function stringify($value, $deep): string
+function stringify($value, $deep)
 {
     if (is_bool($value)) {
         return $value ? "true" : "false";

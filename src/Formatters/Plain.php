@@ -10,7 +10,7 @@ use function gendiff\Ast\{
     getType
 };
 
-function stringify($value): string
+function stringify($value)
 {
     if (is_bool($value)) {
         return $value ? "true" : "false";
