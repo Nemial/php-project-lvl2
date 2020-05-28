@@ -5,53 +5,47 @@ namespace gendiff\tests;
 use PHPUnit\Framework\TestCase;
 
 use function gendiff\Core\genDiff;
-use function gendiff\File\getFileContents;
 
 class CoreTest extends TestCase
 {
-
-    public function testFlatJson()
-    {
-        $pathToFileExpected = __DIR__ . "/fixtures/flatExpected";
-        $pathToFileBefore = __DIR__ . "/fixtures/flatJson/before.json";
-        $pathToFileAfter = __DIR__ . "/fixtures/flatJson/after.json";
-        $expected = trim(getFileContents($pathToFileExpected));
-        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
-    }
-
-    public function testFlatYaml()
+    public function testYaml()
     {
         $pathToFileExpected = __DIR__ . "/fixtures/flatExpected";
         $pathToFileBefore = __DIR__ . "/fixtures/yaml/before.yaml";
         $pathToFileAfter = __DIR__ . "/fixtures/yaml/after.yaml";
-        $expected = trim(getFileContents($pathToFileExpected));
+        $expected = trim(file_get_contents($pathToFileExpected));
         $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
     }
 
-    public function testPrettyFormat()
+    /**
+     * @dataProvider jsonProvider
+     */
+    public function testJSON($before, $after, $expected, $format)
     {
-        $pathToFileExpected = __DIR__ . "/fixtures/prettyExpected";
-        $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
-        $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = trim(getFileContents($pathToFileExpected));
-        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
+        $this->assertEquals($expected, genDiff($before, $after, $format));
     }
 
-    public function testPlainFormat()
+    public function jsonProvider()
     {
-        $pathToFileExpected = __DIR__ . "/fixtures/plainExpected";
-        $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
-        $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = trim(getFileContents($pathToFileExpected));
-        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "plain"));
-    }
-
-    public function testJSONFormat()
-    {
-        $pathToFileExpected = __DIR__ . "/fixtures/jsonExpected.json";
-        $pathToFileBefore = __DIR__ . "/fixtures/json/before.json";
-        $pathToFileAfter = __DIR__ . "/fixtures/json/after.json";
-        $expected = trim(getFileContents($pathToFileExpected));
-        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter, "json"));
+        return [
+            "prettyFormat" => [
+                __DIR__ . "/fixtures/json/before.json",
+                __DIR__ . "/fixtures/json/after.json",
+                trim(file_get_contents(__DIR__ . "/fixtures/prettyExpected")),
+                "pretty"
+            ],
+            "plainFormat" => [
+                __DIR__ . "/fixtures/json/before.json",
+                __DIR__ . "/fixtures/json/after.json",
+                trim(file_get_contents(__DIR__ . "/fixtures/plainExpected")),
+                "plain"
+            ],
+            "jsonFormat" => [
+                __DIR__ . "/fixtures/json/before.json",
+                __DIR__ . "/fixtures/json/after.json",
+                trim(file_get_contents(__DIR__ . "/fixtures/jsonExpected.json")),
+                "json"
+            ]
+        ];
     }
 }

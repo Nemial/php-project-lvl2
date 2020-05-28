@@ -13,11 +13,7 @@ use function gendiff\Ast\{
 function stringify($value)
 {
     if (is_bool($value)) {
-        if ($value) {
-            return 'true';
-        } else {
-            return 'false';
-        }
+        return $value ? "true" : "false";
     }
 
     if (is_object($value)) {
@@ -29,10 +25,10 @@ function stringify($value)
 
 function render(array $tree): string
 {
-    return buildPlainRender($tree, '');
+    return build($tree, '');
 }
 
-function buildPlainRender(array $tree, string $path = ""): string
+function build(array $tree, string $path = ""): string
 {
     $filtered = array_filter($tree, fn($node) => getType($node) !== "unchanged");
 
@@ -48,7 +44,7 @@ function buildPlainRender(array $tree, string $path = ""): string
                 switch ($type) {
                     case "object":
                         $newPath = "{$currentPath}.";
-                        return buildPlainRender(getChildren($node), $newPath);
+                        return build(getChildren($node), $newPath);
                     case "changed":
                         return "Property '{$currentPath}' was changed. From '{$oldValue}' to '{$newValue}'";
                     case "added":

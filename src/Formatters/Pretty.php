@@ -13,25 +13,27 @@ use function Funct\Collection\flattenAll;
 
 const COUNT_INDENT = 4;
 
-function stringify($value, $valueGap, $gap)
+function stringify($value, $deep)
 {
     if (is_bool($value)) {
-        if ($value) {
-            return 'true';
-        } else {
-            return 'false';
-        }
+        return $value ? "true" : "false";
     }
 
     if (is_object($value)) {
-        $data = [];
         $currentValue = get_object_vars($value);
-        foreach ($currentValue as $key => $value) {
-            $data[] = "{$valueGap}{$key}: {$value}";
-        }
-        array_unshift($data, "{");
-        array_push($data, "{$gap}}");
-        return implode("\n", $data);
+        $currentIndent = COUNT_INDENT * $deep;
+        $gap = str_repeat(" ", $currentIndent);
+        $valueIndent = $currentIndent + COUNT_INDENT;
+        $valueGap = str_repeat(" ", $valueIndent);
+        $keys = array_keys($currentValue);
+        $data = array_map(
+            function ($key) use ($currentValue, $valueGap) {
+                $value = $currentValue[$key];
+                return "{$valueGap}{$key}: {$value}";
+            },
+            $keys
+        );
+        return "{\n" . implode("\n", $data) . "{$gap}}\n";
     }
 
     return $value;
@@ -39,37 +41,32 @@ function stringify($value, $valueGap, $gap)
 
 function render(array $tree): string
 {
-    $rendered = buildPrettyRender($tree, 1);
+    $builded = build($tree, 1);
 
-    array_unshift($rendered, '{');
-    array_push($rendered, '}');
-
-    $flatten = flattenAll($rendered);
+    $flatten = flattenAll($builded);
     $filtered = array_filter($flatten, fn($item) => !is_null($item));
 
-    return implode("\n", $filtered);
+    return "{\n" . implode("\n", $filtered) . "\n}";
 }
 
-function buildPrettyRender($tree, $multiplier): array
+function build($tree, $deep): array
 {
     return array_map(
-        function ($node) use ($multiplier) {
+        function ($node) use ($deep) {
             $name = getName($node);
-            $currentIndent = COUNT_INDENT * $multiplier;
+            $currentIndent = COUNT_INDENT * $deep;
             $gap = str_repeat(" ", $currentIndent);
-            $valueIndent = $currentIndent + COUNT_INDENT;
-            $shortIndent = (COUNT_INDENT * $multiplier) - 2;
+            $shortIndent = (COUNT_INDENT * $deep) - 2;
             $shortGap = str_repeat(" ", $shortIndent);
-            $valueGap = str_repeat(" ", $valueIndent);
-            $oldValue = stringify(getOldValue($node), $valueGap, $gap);
-            $newValue = stringify(getNewValue($node), $valueGap, $gap);
+            $oldValue = stringify(getOldValue($node), $deep);
+            $newValue = stringify(getNewValue($node), $deep);
 
             switch (getType($node)) {
                 case "object":
-                    $newMultiplier = $multiplier + 1;
+                    $newDeep = $deep + 1;
                     $data = [];
                     $data[] = "{$gap}{$name}: {";
-                    $children = buildPrettyRender(getChildren($node), $newMultiplier);
+                    $children = build(getChildren($node), $newDeep);
                     $data[] = $children;
                     $data[] = "{$gap}}";
                     return $data;
