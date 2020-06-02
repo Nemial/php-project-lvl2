@@ -8,37 +8,45 @@ use function gendiff\Core\genDiff;
 
 class CoreTest extends TestCase
 {
-    public function testYaml()
+    public function makePathToFixtures($file)
     {
-        $pathToFileExpected = __DIR__ . "/fixtures/flatExpected";
-        $pathToFileBefore = __DIR__ . "/fixtures/yaml/before.yaml";
-        $pathToFileAfter = __DIR__ . "/fixtures/yaml/after.yaml";
-        $expected = trim(file_get_contents($pathToFileExpected));
-        $this->assertEquals($expected, genDiff($pathToFileBefore, $pathToFileAfter));
+        return __DIR__ . "/fixtures/" . $file;
     }
 
     /**
-     * @dataProvider jsonProvider
+     * @dataProvider dataProvider
      */
-    public function testJSON($expected, $format)
+    public function testGenDiff($beforeFileName, $afterFileName, $expected, $format)
     {
-        $before = __DIR__ . "/fixtures/json/before.json";
-        $after = __DIR__ . "/fixtures/json/after.json";
+        $before = $this->makePathToFixtures($beforeFileName);
+        $after = $this->makePathToFixtures($afterFileName);
         $this->assertEquals(trim(file_get_contents($expected)), genDiff($before, $after, $format));
     }
 
-    public function jsonProvider()
+    public function dataProvider()
     {
         return [
+            "yamlFormat" => [
+                "before.yaml",
+                "after.yaml",
+                __DIR__ . "/fixtures/flatExpected",
+                "pretty"
+            ],
             "prettyFormat" => [
+                "before.json",
+                "after.json",
                 __DIR__ . "/fixtures/prettyExpected",
                 "pretty"
             ],
             "plainFormat" => [
+                "before.json",
+                "after.json",
                 __DIR__ . "/fixtures/plainExpected",
                 "plain"
             ],
             "jsonFormat" => [
+                "before.json",
+                "after.json",
                 __DIR__ . "/fixtures/jsonExpected.json",
                 "json"
             ]
