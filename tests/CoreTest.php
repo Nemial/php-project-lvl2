@@ -17,10 +17,11 @@ class CoreTest extends TestCase
     /**
      * @dataProvider dataProvider
      */
-    public function testGenDiff($beforeFileName, $afterFileName, $expected, $format)
+    public function testGenDiff($beforeFileName, $afterFileName, $expectedFileName, $format)
     {
         $before = $this->makePathToFixtures($beforeFileName);
         $after = $this->makePathToFixtures($afterFileName);
+        $expected = $this->makePathToFixtures($expectedFileName);
         $this->assertEquals(trim(file_get_contents($expected)), genDiff($before, $after, $format));
     }
 
@@ -30,25 +31,25 @@ class CoreTest extends TestCase
             "yamlFormat" => [
                 "before.yaml",
                 "after.yaml",
-                __DIR__ . "/fixtures/flatExpected",
+                "flatExpected",
                 "pretty"
             ],
             "prettyFormat" => [
                 "before.json",
                 "after.json",
-                __DIR__ . "/fixtures/prettyExpected",
+                "prettyExpected",
                 "pretty"
             ],
             "plainFormat" => [
                 "before.json",
                 "after.json",
-                __DIR__ . "/fixtures/plainExpected",
+                "plainExpected",
                 "plain"
             ],
             "jsonFormat" => [
                 "before.json",
                 "after.json",
-                __DIR__ . "/fixtures/jsonExpected.json",
+                "jsonExpected.json",
                 "json"
             ]
         ];
