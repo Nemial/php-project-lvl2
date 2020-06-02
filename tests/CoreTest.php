@@ -20,8 +20,10 @@ class CoreTest extends TestCase
     /**
      * @dataProvider jsonProvider
      */
-    public function testJSON($before, $after, $expected, $format)
+    public function testJSON($expected, $format)
     {
+        $before = __DIR__ . "/fixtures/json/before.json";
+        $after = __DIR__ . "/fixtures/json/after.json";
         $this->assertEquals(trim(file_get_contents($expected)), genDiff($before, $after, $format));
     }
 
@@ -29,20 +31,14 @@ class CoreTest extends TestCase
     {
         return [
             "prettyFormat" => [
-                __DIR__ . "/fixtures/json/before.json",
-                __DIR__ . "/fixtures/json/after.json",
                 __DIR__ . "/fixtures/prettyExpected",
                 "pretty"
             ],
             "plainFormat" => [
-                __DIR__ . "/fixtures/json/before.json",
-                __DIR__ . "/fixtures/json/after.json",
                 __DIR__ . "/fixtures/plainExpected",
                 "plain"
             ],
             "jsonFormat" => [
-                __DIR__ . "/fixtures/json/before.json",
-                __DIR__ . "/fixtures/json/after.json",
                 __DIR__ . "/fixtures/jsonExpected.json",
                 "json"
             ]

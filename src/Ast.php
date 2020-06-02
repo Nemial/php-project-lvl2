@@ -55,7 +55,12 @@ function generateAst(object $before, object $after): array
             } else {
                 $beforeValue = $before->$key;
                 $afterValue = $after->$key;
-                if (is_object($beforeValue) && is_object($afterValue)) {
+                if (!is_object($beforeValue) && !is_object($afterValue)) {
+                    if ($beforeValue !== $afterValue) {
+                        return makeNode($key, "changed", $beforeValue, $afterValue);
+                    }
+                    return makeNode($key, "unchanged", $beforeValue);
+                } else {
                     return makeNode(
                         $key,
                         "object",
@@ -63,10 +68,6 @@ function generateAst(object $before, object $after): array
                         null,
                         generateAst($beforeValue, $afterValue),
                     );
-                } elseif ($beforeValue !== $afterValue) {
-                    return makeNode($key, "changed", $beforeValue, $afterValue);
-                } else {
-                    return makeNode($key, "unchanged", $beforeValue);
                 }
             }
         },
