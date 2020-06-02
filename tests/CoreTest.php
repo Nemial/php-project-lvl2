@@ -10,8 +10,8 @@ class CoreTest extends TestCase
 {
     public function makePathToFixtures($file)
     {
-        $parts = [__DIR__, "/fixtures/", $file];
-        return implode("", $parts);
+        $parts = [__DIR__, "fixtures", $file];
+        return implode("/", $parts);
     }
 
     /**
