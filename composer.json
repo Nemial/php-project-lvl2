@@ -19,10 +19,10 @@
             "src/Core.php",
             "src/File.php",
             "src/Formatters.php",
-            "src/Parser.php",
             "src/Formatters/JSON.php",
             "src/Formatters/Plain.php",
-            "src/Formatters/Pretty.php"
+            "src/Formatters/Pretty.php",
+            "src/Parser.php"
         ]
     },
     "require": {
