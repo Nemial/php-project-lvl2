@@ -30,7 +30,7 @@ function render(array $tree): string
 
 function build(array $tree, string $path = ""): string
 {
-    $filtered = array_filter($tree, fn($node) => getType($node) !== "unchanged");
+    $filtered = array_filter($tree, fn ($node) => getType($node) !== "unchanged");
 
     return implode(
         "\n",
